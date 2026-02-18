@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>本地 2FA 驗證器</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>本地 2FA 驗證器</h1>
+        <p>
+          所有計算都在瀏覽器內完成，不會進行任何網路請求。貼上 Base32 祕鑰即可即時驗證 TOTP。
+        </p>
+      </header>
+
+      <section class="grid">
+        <div class="card">
+          <label for="secret">Base32 祕鑰</label>
+          <input id="secret" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" />
+          <div class="row" style="margin-top: 12px;">
+            <div>
+              <label for="digits">位數</label>
+              <select id="digits">
+                <option value="6" selected>6</option>
+                <option value="8">8</option>
+              </select>
+            </div>
+            <div>
+              <label for="period">週期 (秒)</label>
+              <select id="period">
+                <option value="30" selected>30</option>
+                <option value="60">60</option>
+              </select>
+            </div>
+            <div>
+              <label for="skew">允許誤差</label>
+              <select id="skew">
+                <option value="0">0</option>
+                <option value="1" selected>±1 步</option>
+                <option value="2">±2 步</option>
+              </select>
+            </div>
+          </div>
+          <p class="note" style="margin-top: 12px;">
+            提示：祕鑰通常是 Base32 且不含空白。我們會自動忽略空白並轉成大寫。
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="muted">目前 TOTP</div>
+          <div class="token-row">
+            <div id="token" class="token">------</div>
+            <button id="copy" type="button" class="copy-btn" title="複製驗證碼">📋</button>
+          </div>
+          <div class="progress"><span id="progress-bar"></span></div>
+          <div class="row" style="margin-top: 16px;">
+            <div>
+              <label for="code">要驗證的代碼</label>
+              <input id="code" inputmode="numeric" placeholder="123456" autocomplete="one-time-code" />
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <button id="verify" type="button">驗證</button>
+            </div>
+          </div>
+          <div id="status" class="status bad" style="margin-top: 14px;">等待輸入</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <div>
+            <label for="epoch">時間戳 (毫秒)</label>
+            <input id="epoch" readonly />
+          </div>
+          <div>
+            <label for="counter">時間步計數</label>
+            <input id="counter" readonly />
+          </div>
+          <div>
+            <label for="next">下一次更新 (秒)</label>
+            <input id="next" readonly />
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        使用 Web Crypto (HMAC-SHA1)，可在現代瀏覽器離線運作。
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
